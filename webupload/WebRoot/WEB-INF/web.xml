@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+	xmlns="http://java.sun.com/xml/ns/javaee" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<!-- 异常 -->
+	  <error-page>
+	     <exception-type>java.io.IOException</exception-type>
+        <location>/error.html</location>
+    </error-page>
+	<welcome-file-list>
+    <welcome-file>login.jsp</welcome-file>
+  </welcome-file-list>
+	<listener>
+		<listener-class>
+			org.springframework.web.util.Log4jConfigListener
+		</listener-class>
+	</listener>
+<!-- end -->
+<!-- 配置spring 默认在WEB-INF下 -->
+<context-param>
+    <param-name>applicationContext</param-name>
+    <param-value>/WEB-INF/applicationContext.xml</param-value>
+</context-param>
+<!-- 声明web容器监听器不支持监听器就用servlet -->
+ <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+ <filter>
+     <filter-name>struts2</filter-name>
+         <filter-class>org.apache.struts2.dispatcher.FilterDispatcher</filter-class> 
+<!--        <filter-class>com.cdtauth.util.UeditFilter</filter-class>-->
+  	<init-param>
+ 		<param-name>config</param-name>
+ 		<param-value>struts-default.xml,struts-plugin.xml,../struts.xml</param-value>
+	 </init-param>
+  </filter>
+  <filter-mapping>
+  	<filter-name>struts2</filter-name>
+  	<url-pattern>/*</url-pattern>
+  </filter-mapping>
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 <context-param>
+     <param-name>webAppRootKey</param-name>
+     <param-value>candidateauth</param-value>
+ 	</context-param>
+ 	 <session-config>
+	  <session-timeout>200</session-timeout>
+	 </session-config>  
+
+  
+  </web-app>

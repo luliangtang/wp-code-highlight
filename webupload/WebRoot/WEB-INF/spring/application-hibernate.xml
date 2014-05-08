@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jee="http://www.springframework.org/schema/jee"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/tx
+  http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+  http://www.springframework.org/schema/aop
+  http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+  http://www.springframework.org/schema/jee
+  http://www.springframework.org/schema/jee/spring-jee-3.0.xsd"
+  default-autowire="byName" default-lazy-init="true">
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="/WEB-INF/jdbc.properties" />
+	</bean>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}"></property>
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+	</bean>
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="packagesToScan">
+			<list>
+				<value>com.web.vo</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					<!-- Oracle org.hibernate.dialect.Oracle10gDialect -->
+					 <!-- MySql--> org.hibernate.dialect.MySQLDialect 
+				</prop>
+			<!--<prop key="hibernate.hbm2ddl.auto">create</prop> -->
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.format_sql">false</prop>
+				<prop key="hibernate.jdbc.batch_size">30</prop>
+				<prop key="hibernate.default_batch_fetch_size">30</prop>
+				<prop key="hibernate.query.substitutions">true 1, false 0</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.use_query_cache">true</prop>
+				<prop key="hibernate.cache.configurationResourceName">/WEB-INF/ehcache.xml</prop>
+			</props>
+		</property>
+	</bean>
+	<!--Hibernate TransactionManager -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+	
+	<!-- 事务增强切面 将com.feiling.dao下以Dao结尾的类纳入事务管理-->
+	<aop:config>
+		<aop:pointcut id="daoMethod" expression="execution(* com.web.*.dao.*(..))"/>
+		<aop:pointcut id="utilMethod" expression="execution(* com.web.*.util.*(..))"/>
+		<aop:advisor pointcut-ref="daoMethod" advice-ref="txAdvice"/>
+		<aop:advisor pointcut-ref="utilMethod" advice-ref="txAdvice"/>
+	</aop:config>
+	<!-- 事务增强切面END -->
+	<!-- 事务增强 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="get*" read-only="true" />
+			<tx:method name="add*" rollback-for="Exception"/>
+			<tx:method name="update*"/>
+			<tx:method name="remove*"/>
+			<tx:method name="save*"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 事务增强END -->
+<!--	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">-->
+<!--		<property name="sessionFactory" ref="sessionFactory"></property>-->
+<!--	</bean>-->
+    <context:component-scan base-package="com.web.*" /><!-- 需要扫描的基类包,Spring容器将会扫描这个基类包里的所有类，并从类的注解信息获得 -->
+</beans>

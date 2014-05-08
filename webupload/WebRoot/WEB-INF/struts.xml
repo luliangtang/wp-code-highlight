@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<!-- 配置国际化Basename-->
+	<!-- 配置国际化Basename-->
+	<constant name="struts.multipart.maxSize" value="100000000" />
+	<constant name="struts.custom.i18n.resources" value="/config/globalMessages" />
+	<constant name="struts.custom.i18n.resources" value="globalMessages" />
+	<constant name="struts.i18n.encoding" value="utf-8" />
+
+	<!-- 文件上传下载 -->
+	<package name="fileMange" extends="struts-default">
+		<action name="file_*" class="com.web.action.UploadfileAction"
+			method="{1}">
+			<result name="success">/WEB-INF/upfile.jsp</result>
+			<interceptor-ref name="fileUpload">
+				<param name="maximumSize">210240000</param>
+			</interceptor-ref>
+			<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+	</package>
+
+</struts>    

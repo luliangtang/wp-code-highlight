@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Struts2Diagram version="2.0">
+  <package name="fileMange" location="0,0" size="0,0">
+    <action name="file_*" location="0,0" size="0,0">
+      <result name="success">
+        <resourceEdge source="success" routing="0" target="upfile.jsp" />
+      </result>
+    </action>
+  </package>
+  <webResource name="{2}.jsp" path="/WEB-INF/{1}/{2}.jsp" location="79,590" size="150,55" />
+  <webResource name="login.jsp" path="/login.jsp" location="135,30" size="150,55" />
+  <webResource name="pcTakeExamination.jsp" path="/WEB-INF/personalCenter/pcTakeExamination.jsp" location="554,205" size="150,55" />
+  <webResource name="onlineadd.jsp" path="/WEB-INF/onlineregistration/onlineadd.jsp" location="889,415" size="150,55" />
+  <webResource name="examinfo.jsp" path="/WEB-INF/examconfig/examinfo.jsp" location="629,625" size="150,55" />
+  <webResource name="pctakeExamTable.jsp" path="/WEB-INF/personalCenter/pctakeExamTable.jsp" location="279,800" size="150,55" />
+  <webResource name="login.jsp" path="/WEB-INF/login.jsp" location="0,0" size="0,0" />
+  <webResource name="upfile.jsp" path="/WEB-INF/upfile.jsp" location="0,0" size="0,0" />
+</Struts2Diagram>
+
